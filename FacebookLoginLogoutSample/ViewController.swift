@@ -8,9 +8,10 @@
 
 import UIKit
 
-class ViewController: UIViewController, FBSDKLoginButtonDelegate {
+class ViewController: UIViewController, FBSDKLoginButtonDelegate, FBSDKSharingDelegate {
 
     let facebookReadPermissions = ["public_profile", "email", "user_friends"]
+    let facebookWritePermissions = ["publish_actions"]
     let loginManager: FBSDKLoginManager = FBSDKLoginManager()
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,6 +21,8 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate {
         self.view.addSubview(loginButton)
         loginButton.readPermissions = facebookReadPermissions
         loginButton.delegate = self
+        
+
         // Do any additional setup after loading the view, typically from a nib.
     }
     
@@ -33,7 +36,21 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate {
     @IBAction func loginByLoginManager(sender: AnyObject) {
         loginManager.loginBehavior = FBSDKLoginBehavior.Web
         
-        loginManager.logInWithReadPermissions(facebookReadPermissions, fromViewController: self) { (result, error) -> Void in
+        /*loginManager.logInWithReadPermissions(facebookReadPermissions, fromViewController: self) { (result, error) -> Void in
+            if (error != nil) {
+                print(error)
+            } else if (result.isCancelled) {
+                print("login canceled")
+            } else {
+                print("login successfully!")
+                if (FBSDKAccessToken.currentAccessToken() != nil) {
+                    print("Access token : " + FBSDKAccessToken.currentAccessToken().tokenString)
+                    self.customLoginButton.hidden = true
+                    
+                }
+            }
+        }*/
+        loginManager.logInWithPublishPermissions(facebookWritePermissions, fromViewController: self) { (result, error) -> Void in
             if (error != nil) {
                 print(error)
             } else if (result.isCancelled) {
@@ -70,13 +87,50 @@ class ViewController: UIViewController, FBSDKLoginButtonDelegate {
     func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
         
         print("login button did logout")
-        //loginManager.logOut()
+        loginManager.logOut()
+        
         if (FBSDKAccessToken.currentAccessToken() != nil) {
             print(FBSDKAccessToken.currentAccessToken().tokenString)
         } else {
             print("nil access token")
             self.customLoginButton.hidden = false
         }
+    }
+    
+    @IBAction func onShareButonTouched(sender: AnyObject) {
+        let content = FBSDKShareLinkContent()
+        //sharing a random URL page content so that it won't be blocked by facebook on iphone.
+        content.contentURL = NSURL(string:"http://google.com/?q=\(NSDate().timeIntervalSince1970 * 1000)")
+        FBSDKShareDialog.showFromViewController(self, withContent: content, delegate: self)
+        
+    }
+    
+    @available(iOS 2.0, *)
+    func sharer(sharer: FBSDKSharing!, didCompleteWithResults results: [NSObject : AnyObject]!) {
+        if (results["postId"] != nil) {
+            print("shared")
+            let alertController = UIAlertController(title: "FerrisDemoApp", message:
+            "Message has been posted to Facebook!", preferredStyle: UIAlertControllerStyle.Alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
+        
+            self.presentViewController(alertController, animated: true, completion: nil)
+        } else {
+            print("canceled")
+        }
+        
+    }
+    
+    func sharer(sharer: FBSDKSharing!, didFailWithError error: NSError!) {
+        let alertController = UIAlertController(title: "FerrisDemoApp", message:
+            "Failed to post message to Facebook!", preferredStyle: UIAlertControllerStyle.Alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
+        
+        self.presentViewController(alertController, animated: true, completion: nil)
+        
+    }
+    
+    func sharerDidCancel(sharer: FBSDKSharing!) {
+        
     }
 }
 

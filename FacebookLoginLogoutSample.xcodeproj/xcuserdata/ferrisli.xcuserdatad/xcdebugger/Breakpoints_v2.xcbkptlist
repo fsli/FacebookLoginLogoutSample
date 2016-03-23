@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FacebookLoginLogoutSample/ViewController.swift"
-            timestampString = "479981148.867979"
+            timestampString = "480400624.114235"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "64"
-            endingLineNumber = "64"
+            startingLineNumber = "81"
+            endingLineNumber = "81"
             landmarkName = "loginButton(_:didCompleteWithResult:error:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FacebookLoginLogoutSample/ViewController.swift"
-            timestampString = "479981148.867979"
+            timestampString = "480400624.114235"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "72"
-            endingLineNumber = "72"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
             landmarkName = "loginButtonDidLogOut(_:)"
             landmarkType = "5">
          </BreakpointContent>
